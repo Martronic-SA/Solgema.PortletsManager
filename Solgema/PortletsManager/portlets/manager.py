@@ -1,5 +1,6 @@
 import sys
 import logging
+from Products.CMFPlone.utils import getFSVersionTuple
 from Acquisition import Explicit, aq_parent, aq_inner
 from zope.component import adapts, getMultiAdapter, queryMultiAdapter, getUtility
 from zope.interface import implements, Interface
@@ -11,7 +12,7 @@ from plone.app.portlets.interfaces import IColumn
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import ILocalPortletAssignable
 from plone.portlets.interfaces import IPortletManagerRenderer
-from plone.portlets.interfaces import IPortletContext
+from plone.portlets.interfaces import IPortletContext, IPortletAssignmentSettings
 from plone.portlets.constants import CONTEXT_ASSIGNMENT_KEY
 from plone.portlets.constants import CONTEXT_BLACKLIST_STATUS_KEY
 from plone.portlets.constants import CONTEXT_CATEGORY, USER_CATEGORY, GROUP_CATEGORY, CONTENT_TYPE_CATEGORY
@@ -24,12 +25,11 @@ from plone.app.portlets.utils import assignment_mapping_from_key
 from plone.app.portlets.manager import ColumnPortletManagerRenderer
 from plone.app.portlets.manager import DashboardPortletManagerRenderer
 from plone.app.portlets.browser.editmanager import EditPortletManagerRenderer
-from plone.app.portlets.browser.editmanager import ContextualEditPortletManagerRenderer
 from plone.app.portlets.browser.editmanager import DashboardEditPortletManagerRenderer
 
 from plone.app.portlets.interfaces import IDashboard
 
-from Solgema.PortletsManager.interfaces import ISolgemaPortletsManagerLayer, ISolgemaPortletAssignment
+from Solgema.PortletsManager.interfaces import ISolgemaPortletsManagerLayer
 from Solgema.PortletsManager.interfaces import ISolgemaPortletManagerRetriever
 
 LOG = logging.getLogger('Solgema.PortletsManager')
@@ -38,12 +38,10 @@ class SolgemaColumnPortletManagerRenderer(ColumnPortletManagerRenderer):
 #    implements(IPortletManagerRenderer)
 #    adapts(Interface, ISolgemaPortletsManagerLayer, IBrowserView, IColumn)
     template = ViewPageTemplateFile('column.pt')
-
-    def base_url(self):
-        """If context is a default-page, return URL of folder, else
-        return URL of context.
-        """
-        return str(getMultiAdapter((self.context, self.request,), name=u'absolute_url'))
+    
+    @property
+    def hasP4(self):
+        return getFSVersionTuple()[0] == 4
 
 class SolgemaPortletManagerRetriever(object):
     """The default portlet retriever.
@@ -112,6 +110,7 @@ class SolgemaPortletManagerRetriever(object):
         hashlist = getattr(managerUtility, 'listAllManagedPortlets', [])
         assignments = []
         for category, key, assignment in categories:
+            assigned = IPortletAssignmentSettings(assignment)
             portletHash = hashPortletInfo(dict(manager=manager, category=category, key=key, name =assignment.__name__,))
             if portletHash not in hashlist:
                 hashlist.append(portletHash)
@@ -121,7 +120,7 @@ class SolgemaPortletManagerRetriever(object):
                                     'name'        : assignment.__name__,
                                     'assignment'  : assignment,
                                     'hash'        : portletHash,
-                                    'stopUrls'    : ISolgemaPortletAssignment(assignment).stopUrls,
+                                    'stopUrls'    : assigned.get('stopUrls', []),
                                     'manager'     : manager,
                                     })
             except TypeError:

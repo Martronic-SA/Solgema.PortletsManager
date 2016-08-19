@@ -1,13 +1,17 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.9-dev'
+version = '1.1'
+
+long_description = '\n\n'.join([
+    open('README.rst').read(),
+    open('CHANGES.rst').read(),
+])
 
 setup(name='Solgema.PortletsManager',
       version=version,
       description="Solgema Portlets Manager",
-      long_description=open("README.rst").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",

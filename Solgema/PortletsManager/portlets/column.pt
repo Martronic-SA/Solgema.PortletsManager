@@ -3,7 +3,7 @@
                      class string:portletWrapper kssattr-portlethash-${portlet/hash} portletNumber-${repeat/portlet/index} portlet-${portlet/name};"
      tal:content="structure python:view.safe_render(portlet['renderer'])" />
 </tal:block>
-
+<tal:hasP4 condition="view/hasP4">
 <div class="managePortletsLink" tal:condition="view/can_manage_portlets"
       i18n:domain="plone">
   <a title="View portlet management screen"
@@ -12,3 +12,4 @@
      tal:attributes="href string:${view/base_url}/@@manage-portlets"
      >Manage portlets</a>
 </div>
+</tal:hasP4>

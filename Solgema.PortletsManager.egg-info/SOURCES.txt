@@ -4,7 +4,6 @@ README.rst
 setup.cfg
 setup.py
 Solgema/__init__.py
-Solgema/__init__.pyo
 Solgema.PortletsManager.egg-info/PKG-INFO
 Solgema.PortletsManager.egg-info/SOURCES.txt
 Solgema.PortletsManager.egg-info/dependency_links.txt
@@ -24,9 +23,7 @@ Solgema/PortletsManager/profiles.zcml
 Solgema/PortletsManager/setuphandlers.py
 Solgema/PortletsManager/versions.txt
 Solgema/PortletsManager/Extensions/Install.py
-Solgema/PortletsManager/Extensions/Install.pyo
 Solgema/PortletsManager/Extensions/__init__.py
-Solgema/PortletsManager/Extensions/__init__.pyo
 Solgema/PortletsManager/locales/Solgema.PortletsManager.pot
 Solgema/PortletsManager/locales/update.sh
 Solgema/PortletsManager/locales/en/LC_MESSAGES/Solgema.PortletsManager.mo
